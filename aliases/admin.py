@@ -30,3 +30,5 @@ class AliasAdmin(admin.ModelAdmin):
     def aliases(self, obj):
         aliases = Alias.objects.filter(user=obj.user).exclude(id=obj.id)
         return '\n'.join([f'{alias.first_name} {alias.last_name}' for alias in aliases])
+
+admin.site.register(Alias, AliasAdmin)

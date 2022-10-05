@@ -1,8 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.conf import settings
 
 class Alias(models.Model):
-    user = models.ForeignKey('CustomUser', related_name='aliases', on_delete=models.CASCADE, verbose_name='User')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, related_name='lessons',
+                             verbose_name='user', help_text='Set user')
 
     approved = models.BooleanField(default=False, verbose_name='Approved')
     last_name = models.CharField(max_length=256, verbose_name='Last name')
@@ -11,7 +14,7 @@ class Alias(models.Model):
 
     def clean(self):
         if self.user.first_name == self.first_name and self.user.last_name == self.last_name:
-            raise ValidationError(message=ErrorMessage('ALIAS_VALIDATION_NAMES').get_message())
+            raise ValidationError(message='ALIAS_VALIDATION_NAMES')
 
     def str(self):
         return f'Alias by {self.user.full_name}'
